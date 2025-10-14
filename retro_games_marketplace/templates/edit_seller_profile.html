@@ -1,0 +1,57 @@
+<!-- templates/edit_seller_profile.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">Edit Your Profile</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" 
+                                   value="{{ seller.location or '' }}" 
+                                   placeholder="e.g., Mumbai, Maharashtra">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="contact_number" class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" id="contact_number" name="contact_number" 
+                                   value="{{ seller.contact_number or '' }}" 
+                                   placeholder="e.g., +91 98765 43210">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">Bio/Description</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="4" 
+                                  placeholder="Tell buyers about yourself, your collection, and your expertise...">{{ seller.bio or '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="shipping_info" class="form-label">Shipping Information</label>
+                        <textarea class="form-control" id="shipping_info" name="shipping_info" rows="3" 
+                                  placeholder="Describe your shipping policies, costs, and delivery times...">{{ seller.shipping_info or '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="response_time" class="form-label">Response Time</label>
+                        <input type="text" class="form-control" id="response_time" name="response_time" 
+                               value="{{ seller.response_time or '' }}" 
+                               placeholder="e.g., Usually within 2 hours">
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                        <a href="{{ url_for('seller_dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

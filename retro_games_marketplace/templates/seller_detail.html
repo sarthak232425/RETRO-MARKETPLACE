@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <div class="seller-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                     style="width: 80px; height: 80px; font-size: 2rem;">
+                    {{ seller.username[0]|upper }}
+                </div>
+                <h3 class="card-title">{{ seller.username }}</h3>
+                <p class="text-muted mb-2">{{ seller.email }}</p>
+                {% if seller.location %}
+                <p class="text-muted mb-3">
+                    <i class="fas fa-map-marker-alt me-1"></i>{{ seller.location }}
+                </p>
+                {% endif %}
+                <div class="mb-3">
+                    <span class="badge bg-warning text-dark">Rating: {{ seller.rating }}/5</span>
+                    <span class="badge bg-secondary ms-1">Sales: {{ seller.total_sales }}</span>
+                </div>
+                
+                {% if seller.bio %}
+                <div class="seller-bio mb-3">
+                    <h6 class="text-start">About</h6>
+                    <p class="text-muted small text-start">{{ seller.bio }}</p>
+                </div>
+                {% endif %}
+                
+                {% if seller.shipping_info %}
+                <div class="shipping-info mb-3">
+                    <h6 class="text-start">Shipping</h6>
+                    <p class="text-muted small text-start">{{ seller.shipping_info }}</p>
+                </div>
+                {% endif %}
+                
+                {% if seller.response_time %}
+                <div class="response-time mb-3">
+                    <h6 class="text-start">Response Time</h6>
+                    <p class="text-muted small text-start">{{ seller.response_time }}</p>
+                </div>
+                {% endif %}
+                
+                {% if seller.contact_number %}
+                <div class="contact-info mb-3">
+                    <h6 class="text-start">Contact</h6>
+                    <p class="text-muted small text-start">{{ seller.contact_number }}</p>
+                </div>
+                {% endif %}
+                
+                <p class="text-muted small">
+                    <i class="fas fa-calendar me-1"></i>Member since: {{ seller.member_since.strftime('%B %Y') }}
+                </p>
+            </div>
+        </div>
+        
+        {% if is_own_profile %}
+        <div class="card shadow-sm mt-3">
+            <div class="card-body text-center">
+                <a href="{{ url_for('seller_dashboard') }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                    Seller Dashboard
+                </a>
+                <a href="{{ url_for('edit_seller_profile') }}" class="btn btn-outline-secondary btn-sm w-100">
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">Games for Sale ({{ games|length }})</h4>
+                    {% if games %}
+                    <span class="badge bg-primary">Total Value: ₹{{ games|sum(attribute='price')|int }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                {% if games %}
+                <div class="row g-3">
+                    {% for game in games %}
+                    <div class="col-xl-4 col-lg-6">
+                        <div class="card game-card h-100 shadow-sm border-0">
+                            {% if game.images and game.images[0] %}
+                            <img src="{{ url_for('static', filename='uploads/games/' + game.images[0]) }}" 
+                                 class="card-img-top" 
+                                 alt="{{ game.title }}"
+                                 style="height: 180px; object-fit: contain; background: #f8f9fa; padding: 1rem;">
+                            {% else %}
+                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" 
+                                 style="height: 180px;">
+                                <span class="text-muted">No Image</span>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="card-body position-relative">
+                                <span class="badge bg-{{ 'warning' if game.rarity == 'Rare' else 'success' if game.rarity == 'Uncommon' else 'danger' if game.rarity == 'Very Rare' else 'info' if game.rarity == 'Ultra Rare' else 'secondary' }} position-absolute top-0 end-0 m-2">
+                                    {{ game.rarity }}
+                                </span>
+                                
+                                <h6 class="card-title fw-bold mb-2">{{ game.title }}</h6>
+                                <p class="card-text text-muted small mb-2">
+                                    <i class="fas fa-gamepad me-1"></i>{{ game.console.name }}
+                                </p>
+                                
+                                <div class="game-details mb-3">
+                                    <span class="badge bg-{{ 'success' if game.condition == 'Mint' else 'info' if game.condition == 'Excellent' else 'warning' if game.condition == 'Good' else 'secondary' }}">
+                                        {{ game.condition }}
+                                    </span>
+                                    <h3 class="text-primary">₹{{ "%.2f"|format(game.price) }}</h3>
+                                </div>
+                                
+                                <small class="text-muted d-block">
+                                    Listed: {{ game.date_listed.strftime('%b %d, %Y') }}
+                                </small>
+                            </div>
+                            
+                            <div class="card-footer bg-transparent border-0 pt-0">
+                                <a href="{{ url_for('game_detail', game_id=game._id) }}" class="btn btn-primary btn-sm w-100">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="text-muted mb-3" style="font-size: 4rem;">🎮</div>
+                    <h4 class="text-muted mb-3">No Games Listed</h4>
+                    <p class="text-muted mb-4">
+                        {% if is_own_profile %}
+                        Start building your collection by listing your first game!
+                        {% else %}
+                        This seller hasn't listed any games yet.
+                        {% endif %}
+                    </p>
+                    {% if is_own_profile %}
+                    <a href="{{ url_for('add_game') }}" class="btn btn-primary">List Your First Game</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

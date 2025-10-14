@@ -1,0 +1,147 @@
+<!-- templates/games.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">Browse Retro Games</h1>
+    {% if current_seller %}
+    <a href="{{ url_for('add_game') }}" class="btn btn-success btn-lg">Sell Your Game</a>
+    {% else %}
+    <a href="{{ url_for('register') }}" class="btn btn-outline-success btn-lg">Start Selling</a>
+    {% endif %}
+</div>
+
+<div class="row">
+    <!-- Filters Sidebar -->
+    <div class="col-lg-3 col-md-4">
+        <div class="card shadow-sm sticky-top" style="top: 20px;">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">Filters</h5>
+            </div>
+            <div class="card-body">
+                <form method="get">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Console</label>
+                        <select name="console" class="form-select">
+                            <option value="">All Consoles</option>
+                            {% set seen_console_names = [] %}
+                            {% for console in consoles %}
+                                {% if console.name not in seen_console_names %}
+                                    <option value="{{ console._id }}" {% if current_filters.console == console._id|string %}selected{% endif %}>
+                                        {{ console.name }}
+                                    </option>
+                                    {% set _ = seen_console_names.append(console.name) %}
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Condition</label>
+                        <select name="condition" class="form-select">
+                            <option value="">All Conditions</option>
+                            {% for condition in conditions %}
+                            <option value="{{ condition }}" {% if current_filters.condition == condition %}selected{% endif %}>
+                                {{ condition }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Rarity</label>
+                        <select name="rarity" class="form-select">
+                            <option value="">All Rarities</option>
+                            {% for rarity in rarities %}
+                            <option value="{{ rarity }}" {% if current_filters.rarity == rarity %}selected{% endif %}>
+                                {{ rarity }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 mb-2">Apply Filters</button>
+                    <a href="{{ url_for('games') }}" class="btn btn-outline-secondary w-100">Clear Filters</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Games Grid -->
+    <div class="col-lg-9 col-md-8">
+        {% if games %}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <p class="text-muted mb-0">Showing {{ games|length }} game{{ 's' if games|length != 1 }}</p>
+            <div class="btn-group">
+                <button class="btn btn-outline-secondary btn-sm active">Grid View</button>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% for game in games %}
+            <div class="col-xl-4 col-lg-6">
+                <div class="card game-card h-100 shadow-sm border-0 position-relative">
+                    {% if game.images and game.images[0] %}
+                    <div class="position-relative">
+                        <img src="{{ url_for('static', filename='uploads/games/' + game.images[0]) }}" 
+                             class="card-img-top" 
+                             alt="{{ game.title }}"
+                             style="height: 200px; object-fit: contain; background: #f8f9fa; padding: 1rem;">
+                        <span class="badge bg-{{ 'warning' if game.rarity == 'Rare' else 'success' if game.rarity == 'Uncommon' else 'danger' if game.rarity == 'Very Rare' else 'info' if game.rarity == 'Ultra Rare' else 'secondary' }} position-absolute top-0 start-0 m-2" style="z-index:2;">
+                            {{ game.rarity }}
+                        </span>
+                    </div>
+                    {% else %}
+                    <div class="card-img-top d-flex align-items-center justify-content-center bg-light position-relative" 
+                         style="height: 200px;">
+                        <span class="text-muted">No Image Available</span>
+                        <span class="badge bg-{{ 'warning' if game.rarity == 'Rare' else 'success' if game.rarity == 'Uncommon' else 'danger' if game.rarity == 'Very Rare' else 'info' if game.rarity == 'Ultra Rare' else 'secondary' }} position-absolute top-0 start-0 m-2" style="z-index:2;">
+                            {{ game.rarity }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    <div class="card-body position-relative">
+                        <h6 class="card-title fw-bold mb-2">{{ game.title }}</h6>
+                        <p class="card-text text-muted small mb-2">
+                            {{ game.console.name }}
+                        </p>
+                        <div class="game-details mb-3">
+                            <span class="badge bg-{{ 'success' if game.condition == 'Mint' else 'info' if game.condition == 'Excellent' else 'warning' if game.condition == 'Good' else 'secondary' }}">
+                                {{ game.condition }}
+                            </span>
+                            <span class="fw-bold text-primary ms-2">₹{{ "%.0f"|format(game.price) }}</span>
+                        </div>
+                        <div class="seller-info d-flex align-items-center">
+                            <div class="seller-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                 style="width: 30px; height: 30px; font-size: 0.8rem;">
+                                {{ game.seller.username[0]|upper }}
+                            </div>
+                            <div class="seller-details">
+                                <small class="fw-bold d-block">{{ game.seller.username }}</small>
+                                <small class="text-muted">
+                                    <span class="text-warning">Rating: {{ game.seller.rating }}/5</span> • 
+                                    {{ game.seller.total_sales }} sales
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0">
+                        <a href="{{ url_for('game_detail', game_id=game._id) }}" class="btn btn-primary w-100">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="text-muted mb-3">No games found</div>
+            <h4 class="text-muted mb-3">No games found</h4>
+            <p class="text-muted mb-4">Try adjusting your filters or check back later for new listings.</p>
+            <a href="{{ url_for('games') }}" class="btn btn-primary">Clear Filters</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

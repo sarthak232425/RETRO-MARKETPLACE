@@ -1,0 +1,104 @@
+/* static/css/style.css */
+:root {
+    --retro-purple: #6a0dad;
+    --retro-blue: #0066cc;
+    --retro-green: #00cc66;
+    --retro-orange: #ff6600;
+}
+
+.retro-font {
+    font-family: 'Press Start 2P', cursive, monospace;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, var(--retro-purple), var(--retro-blue));
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="white" opacity="0.1" width="10" height="10"/></svg>') repeat;
+    background-size: 20px 20px;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 3rem;
+}
+
+.game-card {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.game-card:hover {
+    border-color: var(--retro-blue);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.condition-mint {
+    color: var(--retro-green);
+    font-weight: bold;
+}
+
+.condition-excellent {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.condition-good {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.condition-fair {
+    color: #fd7e14;
+    font-weight: bold;
+}
+
+.condition-poor {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.game-image-placeholder {
+    font-size: 8rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 2rem;
+    border: 2px dashed #dee2e6;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 1rem;
+    }
+    
+    .retro-font {
+        font-size: 1.2rem;
+    }
+}

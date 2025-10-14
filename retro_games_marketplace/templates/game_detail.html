@@ -1,0 +1,143 @@
+<!-- templates/game_detail.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                {% if game.images %}
+                <!-- Image Carousel -->
+                <div id="gameCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for image in game.images %}
+                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                            <img src="{{ url_for('static', filename='uploads/games/' + image) }}" 
+                                 class="d-block w-100 game-image" 
+                                 alt="{{ game.title }}"
+                                 style="max-height: 400px; object-fit: contain;">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if game.images|length > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#gameCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#gameCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                    {% endif %}
+                </div>
+                
+                <!-- Thumbnail Navigation -->
+                {% if game.images|length > 1 %}
+                <div class="d-flex flex-wrap mt-3">
+                    {% for image in game.images %}
+                    <img src="{{ url_for('static', filename='uploads/games/' + image) }}" 
+                         class="img-thumbnail me-2 mb-2" 
+                         style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                         onclick="document.getElementById('gameCarousel').carousel.to({{ loop.index0 }})"
+                         alt="Thumbnail {{ loop.index }}">
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Add More Images Form - ONLY FOR OWNER -->
+                {% if is_owner %}
+                <div class="mt-3">
+                    <form action="{{ url_for('add_game_images', game_id=game._id) }}" method="POST" enctype="multipart/form-data" class="d-flex">
+                        <input type="file" name="images" multiple accept="image/*" class="form-control me-2">
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Add Images</button>
+                    </form>
+                </div>
+                {% endif %}
+
+                {% else %}
+                <!-- No Images Placeholder -->
+                <div class="text-center py-5">
+                    <div class="game-image-placeholder mb-3">No Image</div>
+                    <p class="text-muted">No images available</p>
+                    {% if is_owner %}
+                    <form action="{{ url_for('add_game_images', game_id=game._id) }}" method="POST" enctype="multipart/form-data">
+                        <input type="file" name="images" multiple accept="image/*" class="form-control mb-2">
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Upload Images</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h3 class="text-primary">₹{{ "%.0f"|format(game.price) }}</h3>
+                    <span class="badge bg-{{ 'warning' if game.rarity == 'Rare' else 'success' if game.rarity == 'Uncommon' else 'danger' if game.rarity == 'Very Rare' else 'info' if game.rarity == 'Ultra Rare' else 'secondary' }}">
+                        {{ game.rarity }}
+                    </span>
+                </div>
+                
+                <div class="game-details mb-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Condition:</strong><br>
+                            <span class="badge bg-{{ 'success' if game.condition == 'Mint' else 'info' if game.condition == 'Excellent' else 'warning' if game.condition == 'Good' else 'secondary' }}">
+                                {{ game.condition }}
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Listed:</strong><br>
+                            <small class="text-muted">{{ game.date_listed.strftime('%b %d, %Y') }}</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="description-section mb-4">
+                    <h6>Description</h6>
+                    <p class="text-muted">{{ game.description }}</p>
+                </div>
+                
+                <div class="seller-info card border-0 bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title">Seller Information</h6>
+                        <div class="seller-details">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="seller-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                     style="width: 40px; height: 40px; font-size: 1rem;">
+                                    {{ game.seller.username[0]|upper }}
+                                </div>
+                                <div>
+                                    <strong class="d-block">{{ game.seller.username }}</strong>
+                                    <small class="text-muted">{{ game.seller.location }}</small>
+                                </div>
+                            </div>
+                            <div class="seller-stats mb-2">
+                                <span class="badge bg-warning text-dark me-2">Rating: {{ game.seller.rating }}/5</span>
+                                <span class="badge bg-secondary">{{ game.seller.total_sales }} sales</span>
+                            </div>
+                            {% if game.seller.bio %}
+                            <p class="small text-muted mb-2">{{ game.seller.bio }}</p>
+                            {% endif %}
+                            {% if game.seller.response_time %}
+                            <small class="text-muted d-block">Response time: {{ game.seller.response_time }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="mt-3">
+                            <a href="{{ url_for('seller_detail', seller_id=game.seller._id) }}" class="btn btn-outline-primary btn-sm">
+                                View Full Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="{{ url_for('contact_seller', seller_id=game.seller._id, game_id=game._id, game_title=game.title) }}" 
+                   class="btn btn-success btn-lg w-100 mt-4">
+                    Contact Seller
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="sellers-page">
+    <!-- Header Section -->
+    <section class="sellers-header text-center mb-5">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3 gradient-text">Meet Our Sellers</h1>
+            <p class="lead text-muted mb-4">Connect with trusted retro gaming enthusiasts and collectors</p>
+            <!-- Stats Bar -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-auto">
+                    <div class="stat-badge">
+                        <span class="stat-number">{{ sellers|length }}+</span>
+                        <span class="stat-label">Active Sellers</span>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="stat-badge">
+                        <span class="stat-number">4.8★</span>
+                        <span class="stat-label">Avg Rating</span>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="stat-badge">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Verified</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Sellers Grid -->
+    <section class="sellers-grid mb-5">
+        <div class="container">
+            <!-- Search and Filter Bar -->
+            <div class="row mb-4">
+                <div class="col-md-8 mx-auto">
+                    <div class="search-filter-card p-3 rounded-3 shadow-sm">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0">
+                                        <i class="fas fa-search text-muted"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-start-0" id="sellerSearch" placeholder="Search sellers...">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="sortSellers">
+                                    <option value="rating">Sort by Rating</option>
+                                    <option value="sales">Sort by Sales</option>
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-outline-primary w-100" id="resetFilters">
+                                    <i class="fas fa-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sellers Cards -->
+            <div class="row g-4" id="sellersContainer">
+                {% set seen_seller_usernames = [] %}
+                {% for seller in sellers %}
+                {% if seller.username not in seen_seller_usernames %}
+                <div class="col-xl-4 col-lg-6 col-md-6 seller-card" 
+                     data-rating="{{ seller.rating }}" 
+                     data-sales="{{ seller.total_sales }}"
+                     data-joined="{{ seller.member_since.strftime('%Y%m%d') if seller.member_since else '' }}">
+                    <div class="card seller-profile-card h-100 border-0 shadow-lg hover-lift">
+                        <!-- Seller Header with Gradient -->
+                        <div class="seller-header position-relative">
+                            <div class="seller-cover" style="background: linear-gradient(135deg, {{ ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe']|random }}, {{ ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe']|random }}); height: 100px; border-radius: 1rem 1rem 0 0;">
+                            </div>
+                            <!-- Seller Avatar -->
+                            <div class="seller-avatar position-absolute top-100 start-50 translate-middle">
+                                <div class="avatar-wrapper">
+                                    <div class="avatar-circle bg-white shadow-lg">
+                                        <span class="avatar-initials">{{ seller.username[0:2].upper() }}</span>
+                                    </div>
+                                    {% if seller.rating >= 4.5 %}
+                                    <div class="verified-badge position-absolute top-0 end-0">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Seller Body -->
+                        <div class="card-body text-center pt-5 pb-3">
+                            <h5 class="seller-name fw-bold mb-1">{{ seller.username }}</h5>
+                            <!-- Rating Stars -->
+                            <div class="seller-rating mb-2">
+                                <div class="stars mb-1">
+                                    {% for i in range(5) %}
+                                        {% if i < seller.rating|int %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <small class="text-muted">({{ seller.rating }})</small>
+                            </div>
+                            <!-- Seller Stats -->
+                            <div class="seller-stats row g-2 mb-3">
+                                <div class="col-6">
+                                    <div class="stat-item">
+                                        <div class="stat-number text-primary fw-bold">{{ seller.total_sales }}+</div>
+                                        <div class="stat-label text-muted small">Sales</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-item">
+                                        <div class="stat-number text-success fw-bold">
+                                            {% if seller.response_time %}
+                                                {{ seller.response_time }}
+                                            {% else %}
+                                                24h
+                                            {% endif %}
+                                        </div>
+                                        <div class="stat-label text-muted small">Response</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Location -->
+                            {% if seller.location %}
+                            <div class="seller-location mb-3">
+                                <i class="fas fa-map-marker-alt text-muted me-1"></i>
+                                <small class="text-muted">{{ seller.location }}</small>
+                            </div>
+                            {% endif %}
+                            <!-- Bio Preview -->
+                            {% if seller.bio %}
+                            <div class="seller-bio mb-3">
+                                <p class="text-muted small mb-0">{{ seller.bio[:100] }}{% if seller.bio|length > 100 %}...{% endif %}</p>
+                            </div>
+                            {% endif %}
+                            <!-- Specialties -->
+                            <div class="seller-specialties mb-3">
+                                <div class="specialty-tags">
+                                    {% set specialties = ['Retro Games', 'Console Systems', 'Collector Items', 'Rare Finds', 'Mint Condition'] %}
+                                    {% for specialty in specialties[:3] %}
+                                    <span class="badge bg-light text-dark me-1 mb-1">{{ specialty }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card Footer -->
+                        <div class="card-footer bg-transparent border-0 pt-0">
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('seller_detail', seller_id=seller._id) }}" class="btn btn-primary btn-hover-gradient">
+                                    <i class="fas fa-store me-2"></i>Visit Store
+                                </a>
+                                {% if current_seller and current_seller._id != seller._id %}
+                                <a href="{{ url_for('contact_seller', seller_id=seller._id) }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-envelope me-2"></i>Contact
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% set _ = seen_seller_usernames.append(seller.username) %}
+                {% endif %}
+                {% endfor %}
+            </div>
+            <!-- Empty State -->
+            {% if not sellers %}
+            <div class="text-center py-5">
+                <div class="empty-state">
+                    <i class="fas fa-users text-muted fs-1 mb-3"></i>
+                    <h4 class="text-muted mb-3">No Sellers Found</h4>
+                    <p class="text-muted mb-4">There are no sellers registered yet.</p>
+                    {% if not current_seller %}
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Become First Seller
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    <!-- CTA Section -->
+    <section class="cta-section bg-gradient-primary text-white py-5 rounded-3">
+        <div class="container text-center">
+            <h3 class="fw-bold mb-3">Ready to Join Our Community?</h3>
+            <p class="mb-4 opacity-75">Start selling your retro games today and connect with collectors worldwide.</p>
+            {% if not current_seller %}
+            <a href="{{ url_for('register') }}" class="btn btn-light btn-lg px-5">
+                <i class="fas fa-rocket me-2"></i>Start Selling Now
+            </a>
+            {% else %}
+            <a href="{{ url_for('seller_dashboard') }}" class="btn btn-light btn-lg px-5">
+                <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+            </a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

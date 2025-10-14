@@ -1,0 +1,423 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-dark text-white py-5 mb-5 position-relative overflow-hidden">
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Retro Game Marketplace</h1>
+                <p class="lead mb-4">Discover, collect, and trade vintage video games and consoles from the golden age of gaming. Your trusted marketplace for retro gaming treasures.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{{ url_for('games') }}" class="btn btn-primary btn-lg px-4 py-3 fw-semibold">
+                        <i class="fas fa-gamepad me-2"></i>Browse Games
+                    </a>
+                    {% if not current_seller %}
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold">
+                        <i class="fas fa-store me-2"></i>Start Selling
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-graphic mt-4 mt-lg-0">
+                    <div class="floating-consoles">
+                        <div class="console-icon nes">
+                            <i class="fab fa-nintendo-switch"></i>
+                        </div>
+                        <div class="console-icon snes">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="console-icon genesis">
+                            <i class="fas fa-joystick"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Animated background elements -->
+    <div class="hero-shape-1"></div>
+    <div class="hero-shape-2"></div>
+</section>
+
+<!-- Features Section - Enhanced -->
+<section class="features-section mb-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Why Choose Retro Marketplace?</h2>
+            <p class="lead text-muted">The ultimate destination for retro gaming enthusiasts</p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Feature 1 - Vintage Collection -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100 border-0 shadow-lg hover-lift">
+                    <div class="card-body text-center p-4 position-relative">
+                        <!-- Animated Icon -->
+                        <div class="feature-icon-wrapper mb-4">
+                            <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded-3 mx-auto d-flex align-items-center justify-content-center position-relative">
+                                <i class="fas fa-8-bit fa-joystick fs-2"></i>
+                                <div class="pulse-ring"></div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="card-title fw-bold mb-3">Vintage Collection</h4>
+                        <p class="card-text text-muted mb-4">Find rare and classic games from NES, SNES, Sega Genesis, PlayStation and more from gaming's golden era.</p>
+                        
+                        <!-- Feature List -->
+                        <div class="feature-list text-start">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <small>8-bit to 128-bit classics</small>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <small>Complete in box items</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <small>Rare collector's editions</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 2 - Verified Sellers -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100 border-0 shadow-lg hover-lift">
+                    <div class="card-body text-center p-4 position-relative">
+                        <!-- Animated Icon -->
+                        <div class="feature-icon-wrapper mb-4">
+                            <div class="feature-icon bg-success bg-opacity-10 text-success rounded-3 mx-auto d-flex align-items-center justify-content-center position-relative">
+                                <i class="fas fa-shield-alt fs-2"></i>
+                                <div class="pulse-ring"></div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="card-title fw-bold mb-3">Verified Sellers</h4>
+                        <p class="card-text text-muted mb-4">Buy with confidence from our community of trusted, rated collectors and verified retro gaming experts.</p>
+                        
+                        <!-- Trust Indicators -->
+                        <div class="trust-indicators">
+                            <div class="d-flex justify-content-around mb-3">
+                                <div class="text-center">
+                                    <div class="fw-bold text-success">★ 4.9/5</div>
+                                    <small class="text-muted">Seller Rating</small>
+                                </div>
+                                <div class="text-center">
+                                    <div class="fw-bold text-success">100%</div>
+                                    <small class="text-muted">Verified</small>
+                                </div>
+                                <div class="text-center">
+                                    <div class="fw-bold text-success">24h</div>
+                                    <small class="text-muted">Response Time</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3 - Detailed Listings -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100 border-0 shadow-lg hover-lift">
+                    <div class="card-body text-center p-4 position-relative">
+                        <!-- Animated Icon -->
+                        <div class="feature-icon-wrapper mb-4">
+                            <div class="feature-icon bg-info bg-opacity-10 text-info rounded-3 mx-auto d-flex align-items-center justify-content-center position-relative">
+                                <i class="fas fa-clipboard-list fs-2"></i>
+                                <div class="pulse-ring"></div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="card-title fw-bold mb-3">Detailed Listings</h4>
+                        <p class="card-text text-muted mb-4">Complete condition reports, professional grading, rarity ratings, and high-quality photos for every item.</p>
+                        
+                        <!-- Listing Features -->
+                        <div class="listing-features">
+                            <div class="row text-center g-2">
+                                <div class="col-6">
+                                    <i class="fas fa-camera text-info mb-1"></i>
+                                    <small>HD Photos</small>
+                                </div>
+                                <div class="col-6">
+                                    <i class="fas fa-search text-info mb-1"></i>
+                                    <small>Condition Check</small>
+                                </div>
+                                <div class="col-6">
+                                    <i class="fas fa-star text-info mb-1"></i>
+                                    <small>Grading</small>
+                                </div>
+                                <div class="col-6">
+                                    <i class="fas fa-history text-info mb-1"></i>
+                                    <small>History</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Games Section -->
+<section class="featured-games mb-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="section-title fw-bold">Featured Games</h2>
+                <p class="text-muted mb-0">Handpicked classics from our collection</p>
+            </div>
+            <a href="{{ url_for('games') }}" class="btn btn-outline-primary btn-lg">
+                View All Games <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+        
+        {% if featured_games %}
+        <div class="row g-4">
+            {% for game in featured_games %}
+            <div class="col-xl-3 col-lg-4 col-md-6">
+                <div class="card game-card h-100 shadow-sm border-0 hover-scale">
+                    <div class="position-relative overflow-hidden">
+                        {% if game.images and game.images[0] %}
+                        <img src="{{ url_for('static', filename='uploads/games/' + game.images[0]) }}" 
+                             class="card-img-top game-image" 
+                             alt="{{ game.title }}"
+                             style="height: 200px; object-fit: contain; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 1.5rem;">
+                        {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center bg-gradient" 
+                             style="height: 200px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                            <i class="fas fa-gamepad text-muted fs-1"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <span class="badge rarity-badge position-absolute top-0 end-0 m-2">
+                            {{ game.rarity }}
+                        </span>
+                    </div>
+                    
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold text-dark">{{ game.title }}</h6>
+                        <p class="card-text text-muted small mb-2">
+                            <i class="fas fa-tv me-1"></i>{{ game.console.name }}
+                        </p>
+                        
+                        <div class="game-details d-flex justify-content-between align-items-center">
+                            <span class="badge condition-badge">
+                                {{ game.condition }}
+                            </span>
+                            <strong class="text-primary fs-5">₹{{ "%.2f"|format(game.price) }}</strong>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0">
+                        <a href="{{ url_for('game_detail', game_id=game._id) }}" class="btn btn-primary w-100 py-2 fw-semibold">
+                            <i class="fas fa-eye me-2"></i>View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="empty-state">
+                <i class="fas fa-gamepad text-muted fs-1 mb-3"></i>
+                <div class="text-muted mb-3">No featured games available at the moment.</div>
+                <a href="{{ url_for('games') }}" class="btn btn-primary btn-lg">Browse All Games</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section bg-gradient-primary text-white py-5 rounded-3">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <h3 class="fw-bold display-6 mb-2">{{ featured_games|length }}+</h3>
+                    <p class="mb-0 opacity-75">Games Available</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <h3 class="fw-bold display-6 mb-2">5+</h3>
+                    <p class="mb-0 opacity-75">Console Systems</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <h3 class="fw-bold display-6 mb-2">100%</h3>
+                    <p class="mb-0 opacity-75">Verified Sellers</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <h3 class="fw-bold display-6 mb-2">24/7</h3>
+                    <p class="mb-0 opacity-75">Support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Enhanced CSS Styles */
+.hero-section {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-radius: 1rem;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23ffffff10" points="0,1000 1000,0 1000,1000"/></svg>');
+    background-size: cover;
+}
+
+.floating-consoles {
+    position: relative;
+    height: 200px;
+}
+
+.console-icon {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.console-icon.nes {
+    top: 20px;
+    left: 30%;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    animation-delay: 0s;
+}
+
+.console-icon.snes {
+    top: 80px;
+    left: 50%;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    animation-delay: 1s;
+}
+
+.console-icon.genesis {
+    top: 40px;
+    left: 70%;
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.feature-card {
+    transition: all 0.3s ease;
+    border-radius: 1rem;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.feature-icon {
+    width: 100px;
+    height: 100px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.feature-icon-wrapper:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+.pulse-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
+
+.rarity-badge {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    font-size: 0.7rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.condition-badge {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.game-image {
+    transition: transform 0.3s ease;
+}
+
+.game-card:hover .game-image {
+    transform: scale(1.05);
+}
+
+.empty-state {
+    padding: 3rem 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        text-align: center;
+        padding: 3rem 1rem;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+    }
+}
+</style>
+
+<!-- Add Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+{% endblock %}
